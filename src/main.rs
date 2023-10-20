@@ -1,34 +1,11 @@
-use std::io::{self, stdout, Read};
-use termion::raw::IntoRawMode;
+#![warn(clippy::all, clippy::pedantic)]
+mod editor;
+mod terminal;
 
-fn to_ctrl_byte(c: char) -> u8 {
-    let byte = c as u8;
-    byte & 0b0001_1111
-}
-
-fn die(e: std::io::Error) {
-    panic!("{}", e);
-}
+use editor::Editor;
+pub use terminal::Terminal;
+// re-exporting the Terminal struct at the top level and make it reachable via crate::Terminal
 
 fn main() {
-    let _stdout = stdout().into_raw_mode().unwrap();
-
-    for b in io::stdin().bytes() {
-        // bytes() needs std::io::Read
-        match b {
-            Ok(b) => {
-                let c = b as char;
-                if c.is_control() {
-                    println!("{:?} \r", b);  // \r The carriage return moves the cursor back to the beginning of the current line
-                } else {
-                    println!("{:?} ({})\r", b, c);
-                }
-                if b == to_ctrl_byte('c') {
-                    break;
-                }
-            }
-            Err(err) => die(err),
-        }
-        
-    }
+    Editor::default().run();
 }
