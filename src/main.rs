@@ -4,6 +4,7 @@ mod terminal;
 
 use editor::Editor;
 pub use terminal::Terminal;
+pub use editor::Position;
 // re-exporting the Terminal struct at the top level and make it reachable via crate::Terminal
 
 fn main() {
